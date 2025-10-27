@@ -1,62 +1,262 @@
-<p align="center">
-  <a href="https://www.medusajs.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
-  </a>
-</p>
-<h1 align="center">
-  Medusa
-</h1>
+# Medusa PayKit Integration
 
-<h4 align="center">
-  <a href="https://docs.medusajs.com">Documentation</a> |
-  <a href="https://www.medusajs.com">Website</a>
-</h4>
+A complete integration between Medusa and PayKit SDK for payment processing with Stripe.
 
-<p align="center">
-  Building blocks for digital commerce
-</p>
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-    <a href="https://www.producthunt.com/posts/medusa"><img src="https://img.shields.io/badge/Product%20Hunt-%231%20Product%20of%20the%20Day-%23DA552E" alt="Product Hunt"></a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
+## Quick Start
 
-## Compatibility
+### Prerequisites
 
-This starter is compatible with versions >= 2 of `@medusajs/medusa`. 
+- Node.js >= 20
+- PostgreSQL database
+- Docker (for database)
+- Stripe account with API keys
 
-## Getting Started
+### Setup
 
-Visit the [Quickstart Guide](https://docs.medusajs.com/learn/installation) to set up a server.
+1. Install dependencies:
 
-Visit the [Docs](https://docs.medusajs.com/learn/installation#get-started) to learn more about our system requirements.
+```bash
+npm install
+```
 
-## What is Medusa
+2. Start the database:
 
-Medusa is a set of commerce modules and tools that allow you to build rich, reliable, and performant commerce applications without reinventing core commerce logic. The modules can be customized and used to build advanced ecommerce stores, marketplaces, or any product that needs foundational commerce primitives. All modules are open-source and freely available on npm.
+```bash
+docker start medusa-postgres
+```
 
-Learn more about [Medusa’s architecture](https://docs.medusajs.com/learn/introduction/architecture) and [commerce modules](https://docs.medusajs.com/learn/fundamentals/modules/commerce-modules) in the Docs.
+3. Start the development server:
 
-## Community & Contributions
+```bash
+npm run dev
+```
 
-The community and core team are available in [GitHub Discussions](https://github.com/medusajs/medusa/discussions), where you can ask for support, discuss roadmap, and share ideas.
+The server will be available at http://localhost:9000
 
-Join our [Discord server](https://discord.com/invite/medusajs) to meet other community members.
+## Testing the PayKit Integration
 
-## Other channels
+### Step 1: Get Admin API Token
 
-- [GitHub Issues](https://github.com/medusajs/medusa/issues)
-- [Twitter](https://twitter.com/medusajs)
-- [LinkedIn](https://www.linkedin.com/company/medusajs)
-- [Medusa Blog](https://medusajs.com/blog/)
+POST http://localhost:9000/auth/user/emailpass
+Content-Type: application/json
+
+```json
+{
+  "email": "admin@example.com",
+  "password": "admin"
+}
+```
+
+Response:
+
+```json
+{
+  "token": "eyJhbGc..."
+}
+```
+
+Use `Authorization: Bearer {token}` header for subsequent requests.
+
+### Step 2: Create a Customer
+
+POST http://localhost:9000/admin/customers
+Authorization: Bearer {token}
+Content-Type: application/json
+
+```json
+{
+  "email": "test@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "phone": "+1234567890"
+}
+```
+
+Response:
+
+```json
+{
+  "customer": {
+    "id": "cust_123...",
+    "email": "test@example.com",
+    "first_name": "John",
+    "last_name": "Doe"
+  }
+}
+```
+
+Save the customer.id for the next step.
+
+### Step 3: Get Region & Products
+
+GET http://localhost:9000/admin/regions
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Response:
+
+```json
+{
+  "regions": [
+    {
+      "id": "reg_123...",
+      "name": "US"
+    }
+  ]
+}
+```
+
+GET http://localhost:9000/admin/products
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Response:
+
+```json
+{
+  "products": [
+    {
+      "id": "prod_123...",
+      "title": "Product Name",
+      "variants": [
+        {
+          "id": "variant_123...",
+          "title": "Default Title"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Save the variant_id and region_id.
+
+### Step 4: Create an Order
+
+POST http://localhost:9000/admin/orders
+Authorization: Bearer {token}
+Content-Type: application/json
+
+```json
+{
+  "email": "test@example.com",
+  "customer_id": "cust_123...",
+  "region_id": "reg_123...",
+  "items": [
+    {
+      "variant_id": "variant_123...",
+      "quantity": 2
+    }
+  ],
+  "shipping_address": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address_1": "123 Main St",
+    "city": "San Francisco",
+    "province": "CA",
+    "postal_code": "94111",
+    "country_code": "US"
+  },
+  "billing_address": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "address_1": "123 Main St",
+    "city": "San Francisco",
+    "province": "CA",
+    "postal_code": "94111",
+    "country_code": "US"
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "order": {
+    "id": "order_123...",
+    "display_id": 1,
+    "customer_id": "cust_123...",
+    "email": "test@example.com",
+    "items": [...],
+    "total": 10000,
+    "status": "pending"
+  }
+}
+```
+
+### Step 5: Create Payment Session
+
+This is where PayKit gets involved automatically:
+
+POST http://localhost:9000/admin/orders/order_123.../payment-sessions
+Authorization: Bearer {token}
+Content-Type: application/json
+
+```json
+{
+  "provider_id": "pp_paykit"
+}
+```
+
+What happens here:
+
+- Medusa calls the PayKit adapter
+- PayKit adapter calls initiatePayment()
+- PayKit creates customer in Stripe
+- PayKit creates payment intent in Stripe
+- Returns payment intent data
+
+Response:
+
+```json
+{
+  "payment_session": {
+    "id": "ps_123...",
+    "provider_id": "pp_paykit",
+    "data": {
+      "id": "pi_...",
+      "client_secret": "pi_...secret",
+      "requires_action": false,
+      "status": "requires_capture"
+    }
+  }
+}
+```
+
+### Step 6: Authorize Payment (Capture)
+
+POST http://localhost:9000/admin/orders/order_123.../payment-sessions/ps_123.../authorize
+Authorization: Bearer {token}
+Content-Type: application/json
+
+```json
+{}
+```
+
+Response:
+
+```json
+{
+  "payment_session": {
+    "id": "ps_123...",
+    "provider_id": "pp_paykit",
+    "data": {
+      "status": "succeeded"
+    }
+  }
+}
+```
+
+## Configuration
+
+The PayKit integration is configured in `medusa-config.ts` with Stripe as the payment provider. Make sure to set your Stripe API keys in the `.env` file:
+
+```
+STRIPE_API_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+## Admin Interface
+
+Access the Medusa admin at http://localhost:9000/app to manage orders, customers, and products through the web interface.

@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from "@medusajs/framework/utils";
+import { stripe } from "@paykit-sdk/stripe";
 
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
@@ -13,4 +14,14 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
   },
+  modules: [
+    {
+      resolve: "@paykit-sdk/medusajs",
+      options: {
+        provider: stripe(),
+        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+        debug: process.env.NODE_ENV === "development",
+      },
+    },
+  ],
 });

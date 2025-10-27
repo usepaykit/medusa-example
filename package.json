@@ -25,7 +25,10 @@
     "@medusajs/admin-sdk": "2.11.0",
     "@medusajs/cli": "2.11.0",
     "@medusajs/framework": "2.11.0",
-    "@medusajs/medusa": "2.11.0"
+    "@medusajs/medusa": "2.11.0",
+    "@paykit-sdk/core": "^1.1.100",
+    "@paykit-sdk/medusajs": "^1.0.8",
+    "@paykit-sdk/stripe": "^1.1.98"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.11.0",
