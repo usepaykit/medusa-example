@@ -3282,17 +3282,17 @@
     inquirer "^12.7.0"
     zod "^3.25.76"
 
-"@paykit-sdk/medusajs@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@paykit-sdk/medusajs/-/medusajs-1.0.8.tgz#d15e1b6cd5f214377326d0afb076a0ff3439f9bf"
-  integrity sha512-YQoECjYDMRloiFzR7Fs9Ek62iN/jsrwYDAZRDKJ/F7KR9yuixFajTOV94TfCuxG/DPir8VmOwyAc+yz5AJ9iVQ==
+"@paykit-sdk/medusajs@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@paykit-sdk/medusajs/-/medusajs-1.0.10.tgz#b5bcb78e8b82b7bb7fc1a2f6fb3d9d9e9c6f88a9"
+  integrity sha512-5P1GF3qqIAKX0wzhp+Uq0jGwQjJ2RZgsEhGanX9CYKGXu7+DSxtn00U+hmYwzEjAMQQYRJLjm2Fcd8vYB3UjzA==
   dependencies:
     zod "^3.25.76"
 
-"@paykit-sdk/stripe@^1.1.98":
-  version "1.1.98"
-  resolved "https://registry.yarnpkg.com/@paykit-sdk/stripe/-/stripe-1.1.98.tgz#db93a8abb2324996caa269a2dbc2185b06f4ef29"
-  integrity sha512-ZMEPgFjLj3VQUJgAzJNq3arNBl/9MRSJDuLc9ifN7/LNKdW8GK/oS77XlFekG+8zbVx8kBdt/TpJXy36+TYRGw==
+"@paykit-sdk/stripe@^1.1.103":
+  version "1.1.103"
+  resolved "https://registry.yarnpkg.com/@paykit-sdk/stripe/-/stripe-1.1.103.tgz#0db2231ac3713a4cee9b7cd4f5990af8d2157ba7"
+  integrity sha512-XFrAbKXtqZnLoKOVeFhb5Y32N5L/CVCWmJuS7oWae1KAo161k7o4z7lSFKCg+0DW3F5xF81sjTgXA64IU9marg==
   dependencies:
     stripe "^18.2.1"
 

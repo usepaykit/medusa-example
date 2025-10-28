@@ -16,11 +16,19 @@ module.exports = defineConfig({
   },
   modules: [
     {
-      resolve: "@paykit-sdk/medusajs",
+      resolve: "@medusajs/payment",
       options: {
-        provider: stripe(),
-        webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-        debug: process.env.NODE_ENV === "development",
+        providers: [
+          {
+            resolve: "@paykit-sdk/medusajs",
+            id: "stripe",
+            options: {
+              provider: stripe(),
+              webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+              debug: process.env.NODE_ENV === "development",
+            },
+          },
+        ],
       },
     },
   ],
